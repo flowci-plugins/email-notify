@@ -1,0 +1,12 @@
+name: email-report
+version: 1.0.0
+icon: "git.svg"
+
+inputs:
+- name: FLOWCI_GIT_URL
+  type: string
+  required: true
+
+script: |
+  plugindir=${FLOWCI_AGENT_PLUGIN_DIR}/email-report
+  python3 ${plugindir}/src/report.py
