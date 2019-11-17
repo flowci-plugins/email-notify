@@ -1,5 +1,7 @@
 import smtplib
 import sys
+import os
+from jinja2 import Template, Environment, FileSystemLoader
 from email import encoders
 from email.header import Header
 from email.mime.text import MIMEText
@@ -25,17 +27,52 @@ def _format_addr(s):
 
 
 def createHtml():
-    html = """\
-    <html>
-    <body>
-        <p>Hi,<br>
-        How are you?<br>
-        <a href="http://www.realpython.com">Real Python</a> 
-        has many great tutorials.
-        </p>
-    </body>
-    </html>
-    """
+    data = {
+        'name': 'flow-name',
+        'number': 'build number',
+        'start': '2019-10-10 20:31:05',
+        'finish': '2019-10-10 20:31:20',
+        'duration': '15ms',
+        'trigger': {
+            'type': 'api',
+            'by': 'hello@flow.ci'
+        },
+        'git': {
+            'event': 'pr',
+            'commit': {
+                'id': 'xxx123123',
+                'branch': 'master',
+                'msg': 'hello world',
+                'url': 'https://11231231231'
+            },
+            'pr': {
+                'title': 'pr title',
+                'msg': 'pr message',
+                'url': 'pr url',
+                'number': 'pr number',
+                'head': {
+                    'name': 'head repo name',
+                    'branch': 'head repo branch',
+                    'commit': 'head repo commit'
+                },
+                'base': {
+                    'name': 'base repo name',
+                    'branch': 'base repo branch',
+                    'commit': 'base repo commit'
+                }
+            }
+        },
+        'steps': []
+    }
+
+    currentDir = os.path.dirname(os.path.abspath(__file__))
+
+    loader = FileSystemLoader(currentDir)
+    env = Environment(loader=loader)
+    tm = env.get_template('template.html')
+
+    html = tm.render(d=data)
+    print(html)
 
     msg = MIMEText(html, 'html', 'utf-8')
     msg['From'] = _format_addr('flow.ci <%s>' % FromAddr)
@@ -48,6 +85,10 @@ def createHtml():
 def fetchFlowUsers():
     global ToAddr
     # TODO: fetch flow userlist from api
+    pass
+
+def fetchJobSteps():
+    # TODO: fetch job steps from api
     pass
 
 def send():
@@ -65,10 +106,10 @@ def send():
             server.login(c['pair']['username'], c['pair']['password'])
 
         msg = createHtml()
-        server.sendmail(from_addr=FromAddr, to_addrs=ToAddr.split(','), msg=msg.as_string())
-        server.quit()
+        # server.sendmail(from_addr=FromAddr, to_addrs=ToAddr.split(','), msg=msg.as_string())
+        # server.quit()
         print('[INFO] email been sent')
     except smtplib.SMTPException as e:
         print('[ERROR] on send email %s' % e)
 
-send()
+createHtml()
