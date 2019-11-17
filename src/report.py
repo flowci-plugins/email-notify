@@ -1,4 +1,5 @@
 import smtplib
+import sys
 from email import encoders
 from email.header import Header
 from email.mime.text import MIMEText
@@ -24,11 +25,23 @@ def _format_addr(s):
 
 
 def createHtml():
-    msg = MIMEText('hello, send by Python...', 'plain', 'utf-8')
+    html = """\
+    <html>
+    <body>
+        <p>Hi,<br>
+        How are you?<br>
+        <a href="http://www.realpython.com">Real Python</a> 
+        has many great tutorials.
+        </p>
+    </body>
+    </html>
+    """
+
+    msg = MIMEText(html, 'html', 'utf-8')
     msg['From'] = _format_addr('flow.ci <%s>' % FromAddr)
     msg['To'] = ToAddr
 
-    subject = "job {} - #{}".format(FlowName, BuildNumber)
+    subject = "flow.ci report"
     msg['Subject'] = Header(subject, 'utf-8').encode()
     return msg
 
@@ -38,18 +51,24 @@ def fetchFlowUsers():
     pass
 
 def send():
-    server = createServer()
-    server.set_debuglevel(1)
+    try:
+        server = createServer()
+        server.set_debuglevel(1)
 
-    if ToAddr == 'FLOW_USERS':
-        fetchFlowUsers()
+        if ToAddr == 'FLOW_USERS':
+            fetchFlowUsers()
 
-    if Credential != None:
-        c = fetchCredential(Credential)
-        server.login(c['pair']['username'], c['pair']['password'])
+        if Credential != None:
+            c = fetchCredential(Credential)
+            if c == None:
+                sys.exit('Cannot get credential')
+            server.login(c['pair']['username'], c['pair']['password'])
 
-    msg = createHtml()
-    server.sendmail(from_addr=FromAddr, to_addrs=ToAddr.split(','), msg=msg.as_string())
-    server.quit()
+        msg = createHtml()
+        server.sendmail(from_addr=FromAddr, to_addrs=ToAddr.split(','), msg=msg.as_string())
+        server.quit()
+        print('[INFO] email been sent')
+    except smtplib.SMTPException as e:
+        print('[ERROR] on send email %s' % e)
 
 send()

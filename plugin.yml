@@ -9,4 +9,5 @@ inputs:
 
 script: |
   plugindir=${FLOWCI_AGENT_PLUGIN_DIR}/email-report
+  pip3 install Jinja2
   python3 ${plugindir}/src/report.py
