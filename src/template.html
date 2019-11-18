@@ -45,7 +45,7 @@
 
 <body>
     <div class="content">
-        <h2 class="state-success-bk">flow.ci report: myflow #16</h2>
+        <h2 class="state-success-bk">flow.ci report: {{ d.name }} #{{ d.number }}</h2>
         <table>
             <tbody>
                 <tr>
@@ -74,11 +74,11 @@
                 </tr>
                 <tr>
                     <td>Trigger:</td>
-                    <td>git push</td>
+                    <td>{{ d.trigger }}</td>
                 </tr>
                 <tr>
                     <td>Triggered By:</td>
-                    <td>hello@flow.ci</td>
+                    <td>{{ d.triggerBy }}</td>
                 </tr>
                 <tr>
                     <td>Duration:</td>

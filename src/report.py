@@ -6,7 +6,7 @@ from email import encoders
 from email.header import Header
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
-from util import FlowName, BuildNumber, getVar, fetchCredential
+from util import Job, getVar, fetchCredential
 
 SmtpAddr = getVar('FLOWCI_EMAIL_SMTP')
 IsSSL = getVar('FLOWCI_EMAIL_SSL')
@@ -26,17 +26,18 @@ def _format_addr(s):
     return formataddr((Header(name, 'utf-8').encode(), addr))
 
 
-def createHtml():
-    data = {
-        'name': 'flow-name',
-        'number': 'build number',
+def buildTemplateData():
+    job = Job()
+
+    return {
+        'name': job.flowName,
+        'number': job.number,
+        'status': job.status,
         'start': '2019-10-10 20:31:05',
         'finish': '2019-10-10 20:31:20',
         'duration': '15ms',
-        'trigger': {
-            'type': 'api',
-            'by': 'hello@flow.ci'
-        },
+        'trigger': job.trigger,
+        'triggerBy': job.triggerBy,
         'git': {
             'event': 'pr',
             'commit': {
@@ -65,13 +66,15 @@ def createHtml():
         'steps': []
     }
 
+
+def createHtml():
     currentDir = os.path.dirname(os.path.abspath(__file__))
 
     loader = FileSystemLoader(currentDir)
     env = Environment(loader=loader)
     tm = env.get_template('template.html')
 
-    html = tm.render(d=data)
+    html = tm.render(d=buildTemplateData())
     print(html)
 
     msg = MIMEText(html, 'html', 'utf-8')
