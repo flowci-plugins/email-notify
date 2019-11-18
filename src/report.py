@@ -33,9 +33,9 @@ def buildTemplateData():
         'name': job.flowName,
         'number': job.number,
         'status': job.status,
-        'start': '2019-10-10 20:31:05',
-        'finish': '2019-10-10 20:31:20',
-        'duration': '15ms',
+        'startAt': job.startAt,
+        'finishAt': job.finishAt,
+        'duration': job.duration,
         'trigger': job.trigger,
         'triggerBy': job.triggerBy,
         'git': {
@@ -74,7 +74,7 @@ def createHtml():
     env = Environment(loader=loader)
     tm = env.get_template('template.html')
 
-    html = tm.render(d=buildTemplateData())
+    html = tm.render(job=buildTemplateData())
     print(html)
 
     msg = MIMEText(html, 'html', 'utf-8')

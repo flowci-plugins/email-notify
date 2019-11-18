@@ -45,7 +45,7 @@
 
 <body>
     <div class="content">
-        <h2 class="state-success-bk">flow.ci report: {{ d.name }} #{{ d.number }}</h2>
+        <h2 class="state-success-bk">flow.ci report: {{ job.flowName }} #{{ job.number }}</h2>
         <table>
             <tbody>
                 <tr>
@@ -74,15 +74,23 @@
                 </tr>
                 <tr>
                     <td>Trigger:</td>
-                    <td>{{ d.trigger }}</td>
+                    <td>{{ job.trigger }}</td>
                 </tr>
                 <tr>
                     <td>Triggered By:</td>
-                    <td>{{ d.triggerBy }}</td>
+                    <td>{{ job.triggerBy }}</td>
+                </tr>
+                <tr>
+                    <td>Start At:</td>
+                    <td>{{ job.startAt }}</td>
+                </tr>
+                <tr>
+                    <td>Finish At:</td>
+                    <td>{{ job.finishAt }}</td>
                 </tr>
                 <tr>
                     <td>Duration:</td>
-                    <td>xxxx</td>
+                    <td>{{ job.duration }} (ms)</td>
                 </tr>
 
                 <!-- Git -->

@@ -3,6 +3,7 @@ import json
 import sys
 import base64
 import http.client
+from datetime import datetime
 
 ServerUrl = os.environ.get('FLOWCI_SERVER_URL')
 FlowName = os.environ.get("FLOWCI_FLOW_NAME")
@@ -31,6 +32,12 @@ class Job:
         self.triggerBy = JobTriggerBy
         self.startAt = JobStartAt
         self.finishAt = JobFinishAt
+        self.duration = '-'
+
+        if JobStartAt != None and JobFinishAt != None:
+            start = datetime.fromisoformat(JobStartAt)
+            finish = datetime.fromisoformat(JobFinishAt)
+            self.duration = abs(finish - start).microseconds
 
 def getVar(name, required=True):
     val = os.environ.get(name)
@@ -67,6 +74,7 @@ def fetchFlowUsers():
         path = "/api/flow/{}/users".format(FlowName)
         conn = createHttpConn(ServerUrl)
         conn.request(method="GET", url=path, headers=HttpHeaders)
+        response = conn.getresponse()
 
         if response.status is 200:
             body = response.read()
@@ -82,6 +90,7 @@ def fetchJobSteps():
         path = "/api/flow/{}/job/{}/steps".format(FlowName, JobBuildNumber)
         conn = createHttpConn(ServerUrl)
         conn.request(method="GET", url=path, headers=HttpHeaders)
+        response = conn.getresponse()
 
         if response.status is 200:
             body = response.read()
