@@ -5,6 +5,14 @@ import base64
 import http.client
 from datetime import datetime
 
+JobTriggerScheduler = "SCHEDULER"
+JobTriggerApi = "API"
+JobTriggerManual = "MANUAL"
+JobTriggerPush = "PUSH"
+JobTriggerPrOpen = "PR_OPENED"
+JobTriggerPrMerged = "PR_MERGED"
+JobTriggerTag = "TAG"
+
 ServerUrl = os.environ.get('FLOWCI_SERVER_URL')
 FlowName = os.environ.get("FLOWCI_FLOW_NAME")
 
@@ -41,7 +49,6 @@ GitPrBaseRepoName = os.environ.get('FLOWCI_GIT_PR_BASE_REPO_NAME')
 GitPrBaseRepoBranch = os.environ.get('FLOWCI_GIT_PR_BASE_REPO_BRANCH')
 GitPrBaseRepoCommit = os.environ.get('FLOWCI_GIT_PR_BASE_REPO_COMMIT')
 
-
 HttpHeaders = {
     "Content-type": "application/json",
     "AGENT-TOKEN": AgentToken
@@ -58,6 +65,9 @@ class Job:
         self.finishAt = JobFinishAt
         self.duration = "-"
         self.steps = []
+
+        self.gitCommit = GitCommit()
+        self.gitPr = GitPr()
 
         if JobStartAt != None and JobFinishAt != None:
             start = datetime.strptime(JobStartAt, "%Y-%m-%d %H:%M:%S.%f")
@@ -76,6 +86,35 @@ class Step:
         self.name = pair[0]
         self.status = pair[1]
 
+class GitCommit:
+    def __init__(self):
+        self.id = GitCommitID
+        self.branch = GitCommitBranch
+        self.message = GitCommitMessage
+        self.time = GitCommitTime
+        self.url = GitCommitURL
+
+class GitPr:
+    def __init__(self):
+        self.title = GitPrTitle
+        self.message = GitPrMessage
+        self.url = GitPrURL
+        self.number = GitPrNumber
+        self.time = GitPrTime
+        self.head = GitPrHeadRepo()
+        self.base = GitPrBaseRepo()
+
+class GitPrHeadRepo:
+    def __init__(self):
+        self.name = GitPrHeadRepoName
+        self.branch = GitPrHeadRepoBranch
+        self.commit = GitPrHeadRepoCommit
+
+class GitPrBaseRepo:
+    def __init__(self):
+        self.name = GitPrBaseRepoName
+        self.branch = GitPrBaseRepoBranch
+        self.commit = GitPrBaseRepoCommit
 
 def getVar(name, required=True):
     val = os.environ.get(name)

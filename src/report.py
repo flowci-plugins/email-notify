@@ -26,47 +26,6 @@ def _format_addr(s):
     return formataddr((Header(name, 'utf-8').encode(), addr))
 
 
-def buildTemplateData():
-    job = Job()
-
-    return {
-        'name': job.flowName,
-        'number': job.number,
-        'status': job.status,
-        'startAt': job.startAt,
-        'finishAt': job.finishAt,
-        'duration': job.duration,
-        'trigger': job.trigger,
-        'triggerBy': job.triggerBy,
-        'git': {
-            'event': 'pr',
-            'commit': {
-                'id': 'xxx123123',
-                'branch': 'master',
-                'msg': 'hello world',
-                'url': 'https://11231231231'
-            },
-            'pr': {
-                'title': 'pr title',
-                'msg': 'pr message',
-                'url': 'pr url',
-                'number': 'pr number',
-                'head': {
-                    'name': 'head repo name',
-                    'branch': 'head repo branch',
-                    'commit': 'head repo commit'
-                },
-                'base': {
-                    'name': 'base repo name',
-                    'branch': 'base repo branch',
-                    'commit': 'base repo commit'
-                }
-            }
-        },
-        'steps': job.steps
-    }
-
-
 def createHtml():
     currentDir = os.path.dirname(os.path.abspath(__file__))
 
@@ -74,7 +33,7 @@ def createHtml():
     env = Environment(loader=loader)
     tm = env.get_template('template.html')
 
-    job = buildTemplateData()
+    job = Job()
     html = tm.render(job=job)
     print(html)
 

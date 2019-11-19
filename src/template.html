@@ -101,25 +101,58 @@
                     <td>{{ job.duration }} (ms)</td>
                 </tr>
 
-                <!-- Git -->
+                <!-- Git Commit Info -->
+                {% if job.trigger in ["PUSH", "TAG"] %}
                 <tr>
                     <td colspan="2">
-                        Git Info:
                         <div>
-                            Branch: Master
+                            Branch: {{ job.gitCommit.branch }}
                         </div>
                         <div>
-                            Commit ID:
+                            Commit ID: 
+                            <a href="{{ job.gitCommit.url }}" target="_blank">{{ job.gitCommit.id }}</a>
                         </div>
                         <div>
-                            Commit Message:
+                            Commit Message: {{ job.gitCommit.message }}
                         </div>
                     </td>
                 </tr>
+                {% endif %}
+
+                <!-- Git PR Info -->
+                {% if job.trigger in ["PR_OPENED", "PR_MERGED"] %}
+                <tr>
+                    <td colspan="2">
+                        <div>
+                            Title: 
+                            <a href="{{ job.gitPr.url }}" target="_blank">{{ job.gitPr.title }}</a>
+                        </div>
+                        <div>
+                            Message: {{ job.gitPr.message }}
+                        </div>
+                        <div>
+                            Number: {{ job.gitPr.number }}
+                        </div>
+                        <div>
+                            Head Repo: {{ job.gitPr.head.name }} {{ job.gitPr.head.branch }} 
+                        </div>
+                        <div>
+                            Base Repo: {{ job.gitPr.base.name }} {{ job.gitPr.base.branch }} 
+                        </div>
+                    </td>
+                </tr>
+                {% endif %}
 
                 <!-- Steps -->
                 <tr>
-                    <td colspan="2">Steps:</td>
+                    <td colspan="2">
+                        Steps:
+                        {% for step in job.steps %}
+                        <div>
+                            {{ step.name }} : {{ step.status }}
+                        </div>
+                        {% endfor %}
+                    </td>
                 </tr>
             </tbody>
         </table>
