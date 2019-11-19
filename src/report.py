@@ -53,6 +53,10 @@ def send():
 
         if ToAddr == 'FLOW_USERS':
             users = fetchFlowUsers()
+            emails = ''
+            for user in users:
+                emails += user['email'] + ","
+            ToAddr = emails
 
         if Credential != None:
             c = fetchCredential(Credential)
