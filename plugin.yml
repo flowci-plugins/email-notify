@@ -1,11 +1,28 @@
 name: email-report
 version: 1.0.0
-icon: "git.svg"
+icon: "email.svg"
 
 inputs:
-- name: FLOWCI_GIT_URL
+- name: FLOWCI_EMAIL_SMTP
   type: string
   required: true
+
+- name: FLOWCI_EMAIL_SSL
+  type: bool
+  required: false
+  value: true
+
+- name: FLOWCI_EMAIL_FROM
+  type: string
+  required: true
+
+- name: FLOWCI_EMAIL_TO
+  type: string
+  required: true
+
+- name: FLOWCI_EMAIL_CREDENTIAL
+  type: string
+  required: false
 
 script: |
   plugindir=${FLOWCI_AGENT_PLUGIN_DIR}/email-report

@@ -9,13 +9,13 @@ from email.utils import parseaddr, formataddr
 from util import Job, getVar, fetchCredential, fetchFlowUsers
 
 SmtpAddr = getVar('FLOWCI_EMAIL_SMTP')
-IsSSL = getVar('FLOWCI_EMAIL_SSL')
+IsSSL = getVar('FLOWCI_EMAIL_SSL', required=False)
 FromAddr = getVar('FLOWCI_EMAIL_FROM')
 ToAddr = getVar('FLOWCI_EMAIL_TO')
 Credential = getVar('FLOWCI_EMAIL_CREDENTIAL', required=False)
 
 def createServer():
-    if IsSSL in ['true', 'yes']:
+    if IsSSL in ['true']:
         return smtplib.SMTP_SSL(SmtpAddr, 465)
         
     return smtplib.SMTP(SmtpAddr)
