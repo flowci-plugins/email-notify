@@ -6,7 +6,7 @@ from email import encoders
 from email.header import Header
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
-from util import Job, getVar, fetchCredential
+from util import Job, getVar, fetchCredential, fetchFlowUsers
 
 SmtpAddr = getVar('FLOWCI_EMAIL_SMTP')
 IsSSL = getVar('FLOWCI_EMAIL_SSL')
@@ -45,22 +45,14 @@ def createHtml():
     msg['Subject'] = Header(subject, 'utf-8').encode()
     return msg
 
-def fetchFlowUsers():
-    global ToAddr
-    # TODO: fetch flow userlist from api
-    pass
-
-def fetchJobSteps():
-    # TODO: fetch job steps from api
-    pass
-
 def send():
+    global ToAddr
     try:
         server = createServer()
         server.set_debuglevel(1)
 
         if ToAddr == 'FLOW_USERS':
-            fetchFlowUsers()
+            users = fetchFlowUsers()
 
         if Credential != None:
             c = fetchCredential(Credential)
@@ -69,10 +61,10 @@ def send():
             server.login(c['pair']['username'], c['pair']['password'])
 
         msg = createHtml()
-        # server.sendmail(from_addr=FromAddr, to_addrs=ToAddr.split(','), msg=msg.as_string())
-        # server.quit()
+        server.sendmail(from_addr=FromAddr, to_addrs=ToAddr.split(','), msg=msg.as_string())
+        server.quit()
         print('[INFO] email been sent')
     except smtplib.SMTPException as e:
         print('[ERROR] on send email %s' % e)
 
-createHtml()
+send()
