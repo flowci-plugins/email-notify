@@ -63,7 +63,7 @@ def buildTemplateData():
                 }
             }
         },
-        'steps': []
+        'steps': job.steps
     }
 
 
@@ -74,7 +74,8 @@ def createHtml():
     env = Environment(loader=loader)
     tm = env.get_template('template.html')
 
-    html = tm.render(job=buildTemplateData())
+    job = buildTemplateData()
+    html = tm.render(job=job)
     print(html)
 
     msg = MIMEText(html, 'html', 'utf-8')

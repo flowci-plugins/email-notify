@@ -14,6 +14,7 @@ JobTrigger = os.environ.get("FLOWCI_JOB_TRIGGER")
 JobTriggerBy = os.environ.get("FLOWCI_JOB_TRIGGER_BY")
 JobStartAt = os.environ.get("FLOWCI_JOB_START_AT")
 JobFinishAt = os.environ.get("FLOWCI_JOB_FINISH_AT")
+JobSteps = os.environ.get("FLOWCI_JOB_STEPS")
 
 AgentToken = os.environ.get('FLOWCI_AGENT_TOKEN')
 AgentJobDir = os.environ.get('FLOWCI_AGENT_JOB_DIR')
@@ -32,12 +33,25 @@ class Job:
         self.triggerBy = JobTriggerBy
         self.startAt = JobStartAt
         self.finishAt = JobFinishAt
-        self.duration = '-'
+        self.duration = "-"
+        self.steps = []
 
         if JobStartAt != None and JobFinishAt != None:
             start = datetime.fromisoformat(JobStartAt)
             finish = datetime.fromisoformat(JobFinishAt)
             self.duration = abs(finish - start).microseconds
+
+        if JobSteps != None:
+            items = JobSteps.split(";")
+            for item in items:
+                self.steps.append(Step(item))
+
+class Step:
+    def __init__(self, strItem):
+        pair = strItem.split("=")
+        self.name = pair[0]
+        self.status = pair[1]
+
 
 def getVar(name, required=True):
     val = os.environ.get(name)
@@ -72,22 +86,6 @@ def fetchCredential(name):
 def fetchFlowUsers():
     try:
         path = "/api/flow/{}/users".format(FlowName)
-        conn = createHttpConn(ServerUrl)
-        conn.request(method="GET", url=path, headers=HttpHeaders)
-        response = conn.getresponse()
-
-        if response.status is 200:
-            body = response.read()
-            return json.loads(body)
-
-        return None
-    except Exception as e:
-        print(e)
-        return None
-
-def fetchJobSteps():
-    try:
-        path = "/api/flow/{}/job/{}/steps".format(FlowName, JobBuildNumber)
         conn = createHttpConn(ServerUrl)
         conn.request(method="GET", url=path, headers=HttpHeaders)
         response = conn.getresponse()
