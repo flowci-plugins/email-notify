@@ -19,6 +19,29 @@ JobSteps = os.environ.get("FLOWCI_JOB_STEPS")
 AgentToken = os.environ.get('FLOWCI_AGENT_TOKEN')
 AgentJobDir = os.environ.get('FLOWCI_AGENT_JOB_DIR')
 
+GitEvent = os.environ.get('FLOWCI_GIT_EVENT')
+
+GitCommitBranch = os.environ.get('FLOWCI_GIT_BRANCH')
+GitCommitID = os.environ.get('FLOWCI_GIT_COMMIT_ID')
+GitCommitMessage = os.environ.get('FLOWCI_GIT_COMMIT_MESSAGE')
+GitCommitTime = os.environ.get('FLOWCI_GIT_COMMIT_TIME')
+GitCommitURL = os.environ.get('FLOWCI_GIT_COMMIT_URL')
+
+GitPrTitle = os.environ.get('FLOWCI_GIT_PR_TITLE')
+GitPrMessage = os.environ.get('FLOWCI_GIT_PR_MESSAGE')
+GitPrURL = os.environ.get('FLOWCI_GIT_PR_URL')
+GitPrTime = os.environ.get('FLOWCI_GIT_PR_TIME')
+GitPrNumber = os.environ.get('FLOWCI_GIT_PR_NUMBER')
+
+GitPrHeadRepoName = os.environ.get('FLOWCI_GIT_PR_HEAD_REPO_NAME')
+GitPrHeadRepoBranch = os.environ.get('FLOWCI_GIT_PR_HEAD_REPO_BRANCH')
+GitPrHeadRepoCommit = os.environ.get('FLOWCI_GIT_PR_HEAD_REPO_COMMIT')
+
+GitPrBaseRepoName = os.environ.get('FLOWCI_GIT_PR_BASE_REPO_NAME')
+GitPrBaseRepoBranch = os.environ.get('FLOWCI_GIT_PR_BASE_REPO_BRANCH')
+GitPrBaseRepoCommit = os.environ.get('FLOWCI_GIT_PR_BASE_REPO_COMMIT')
+
+
 HttpHeaders = {
     "Content-type": "application/json",
     "AGENT-TOKEN": AgentToken
@@ -37,14 +60,15 @@ class Job:
         self.steps = []
 
         if JobStartAt != None and JobFinishAt != None:
-            start = datetime.fromisoformat(JobStartAt)
-            finish = datetime.fromisoformat(JobFinishAt)
+            start = datetime.strptime(JobStartAt, "%Y-%m-%d %H:%M:%S.%f")
+            finish = datetime.strptime(JobFinishAt, "%Y-%m-%d %H:%M:%S.%f")
             self.duration = abs(finish - start).microseconds
 
         if JobSteps != None:
             items = JobSteps.split(";")
             for item in items:
-                self.steps.append(Step(item))
+                if item != '':
+                    self.steps.append(Step(item))
 
 class Step:
     def __init__(self, strItem):
