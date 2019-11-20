@@ -15,7 +15,7 @@ It will send job report via email
 ## How to use it
 
 ```yml
-#  Example that togeher with git clone plugin
+#  Example:
 
 envs:
   FLOWCI_GIT_URL: "https://github.com/FlowCI/spring-petclinic-sample.git"
