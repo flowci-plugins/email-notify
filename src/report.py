@@ -2,17 +2,17 @@ import smtplib
 import sys
 import os
 from jinja2 import Template, Environment, FileSystemLoader
+from flowci import client
 from email import encoders
 from email.header import Header
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
-from util import Job, getVar, fetchCredential, fetchFlowUsers
 
-SmtpAddr = getVar('FLOWCI_EMAIL_SMTP')
-IsSSL = getVar('FLOWCI_EMAIL_SSL', required=False)
-FromAddr = getVar('FLOWCI_EMAIL_FROM')
-ToAddr = getVar('FLOWCI_EMAIL_TO')
-Credential = getVar('FLOWCI_EMAIL_CREDENTIAL', required=False)
+SmtpAddr = client.GetVar('FLOWCI_EMAIL_SMTP')
+IsSSL = client.GetVar('FLOWCI_EMAIL_SSL', required=False)
+FromAddr = client.GetVar('FLOWCI_EMAIL_FROM')
+ToAddr = client.GetVar('FLOWCI_EMAIL_TO')
+Credential = client.GetVar('FLOWCI_EMAIL_CREDENTIAL', required=False)
 
 def createServer():
     if IsSSL in ['true']:
@@ -33,7 +33,7 @@ def createHtml():
     env = Environment(loader=loader)
     tm = env.get_template('template.html')
 
-    job = Job()
+    job = client.GetCurrentJob()
     html = tm.render(job=job)
     print(html)
 
@@ -51,15 +51,17 @@ def send():
         server = createServer()
         server.set_debuglevel(1)
 
+        api = client.Client()
+
         if ToAddr == 'FLOW_USERS':
-            users = fetchFlowUsers()
+            users = api.listFlowUsers()
             emails = ''
             for user in users:
                 emails += user['email'] + ","
             ToAddr = emails
 
         if Credential != None:
-            c = fetchCredential(Credential)
+            c = api.getCredential(Credential)
             if c == None:
                 sys.exit('Cannot get credential')
             server.login(c['pair']['username'], c['pair']['password'])
