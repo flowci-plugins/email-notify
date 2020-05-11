@@ -28,8 +28,6 @@ SmtpPort = Config['smtp']['port']
 SmtpUser = Config['smtp']['auth']['username']
 SmtpPw = Config['smtp']['auth']['password']
 
-print(Config)
-
 def createServer():
     if SmtpSecure in ['ssl', 'SSL']:
         return smtplib.SMTP_SSL(SmtpAddr, SmtpPort)
