@@ -3,14 +3,9 @@ version: 1.0.0
 icon: "email.svg"
 
 inputs:
-- name: FLOWCI_EMAIL_SMTP
+- name: FLOWCI_SMTP_CONFIG
   type: string
   required: true
-
-- name: FLOWCI_EMAIL_SSL
-  type: bool
-  required: false
-  value: true
 
 - name: FLOWCI_EMAIL_FROM
   type: string
@@ -18,13 +13,10 @@ inputs:
 
 - name: FLOWCI_EMAIL_TO
   type: string
-  required: true
-
-- name: FLOWCI_EMAIL_CREDENTIAL
-  type: string
+  value: FLOW_USERS
   required: false
 
 script: |
   plugindir=${FLOWCI_AGENT_PLUGIN_DIR}/email-report
-  pip3 install Jinja2
+  python3 -m pip install Jinja2==2.11.0
   python3 ${plugindir}/src/report.py

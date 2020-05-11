@@ -8,17 +8,33 @@ from email.header import Header
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
 
-SmtpAddr = client.GetVar('FLOWCI_EMAIL_SMTP')
-IsSSL = client.GetVar('FLOWCI_EMAIL_SSL', required=False)
+SmtpConfig = client.GetVar('FLOWCI_SMTP_CONFIG')
 FromAddr = client.GetVar('FLOWCI_EMAIL_FROM')
 ToAddr = client.GetVar('FLOWCI_EMAIL_TO')
-Credential = client.GetVar('FLOWCI_EMAIL_CREDENTIAL', required=False)
+
+
+API = client.Client()
+Config = API.getConfig(SmtpConfig)
+
+if Config == None:
+    sys.exit('Cannot get smtp config')
+
+if Config['category'] != 'SMTP':
+    sys.exit('Invalid SMTP config')
+
+SmtpSecure = Config['smtp']['secure'] # NONE, SSL, TLS
+SmtpAddr = Config['smtp']['server']
+SmtpPort = Config['smtp']['port']
+SmtpUser = Config['smtp']['auth']['username']
+SmtpPw = Config['smtp']['auth']['password']
+
+print(Config)
 
 def createServer():
-    if IsSSL in ['true']:
-        return smtplib.SMTP_SSL(SmtpAddr, 465)
+    if SmtpSecure in ['ssl', 'SSL']:
+        return smtplib.SMTP_SSL(SmtpAddr, SmtpPort)
         
-    return smtplib.SMTP(SmtpAddr)
+    return smtplib.SMTP(SmtpAddr, SmtpPort)
 
 
 def _format_addr(s):
@@ -60,11 +76,8 @@ def send():
                 emails += user['email'] + ","
             ToAddr = emails
 
-        if Credential != None:
-            c = api.getCredential(Credential)
-            if c == None:
-                sys.exit('Cannot get credential')
-            server.login(c['pair']['username'], c['pair']['password'])
+        if SmtpUser != None:
+            server.login(SmtpUser, SmtpPw)
 
         msg = createHtml()
         server.sendmail(from_addr=FromAddr, to_addrs=ToAddr.split(','), msg=msg.as_string())
