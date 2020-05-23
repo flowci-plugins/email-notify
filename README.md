@@ -1,4 +1,4 @@
-# email-report
+# email-notify
 
 ## Description
 
@@ -31,5 +31,5 @@ after:
     envs:
         FLOWCI_SMTP_CONFIG: "sendgrid-demo"
         FLOWCI_EMAIL_FROM: "flow.ci.test@gmail.com"
-    plugin: email-report
+    plugin: email-notify
 ```

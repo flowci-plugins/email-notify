@@ -1,4 +1,4 @@
-name: email-report
+name: email-notify
 version: 1.0.0
 icon: "email.svg"
 
@@ -16,7 +16,9 @@ inputs:
   value: FLOW_USERS
   required: false
 
+docker:
+  image: flowci/plugin-email-notify
+
 script: |
   plugindir=${FLOWCI_AGENT_PLUGIN_DIR}/email-report
-  python3 -m pip install Jinja2==2.11.0
   python3 ${plugindir}/src/report.py
