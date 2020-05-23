@@ -20,16 +20,14 @@ envs:
   FLOWCI_GIT_BRANCH: "master"
   FLOWCI_GIT_REPO: "spring-petclinic"
 
+notifications:
+  - plugin: 'email-notify'
+    envs:
+      FLOWCI_SMTP_CONFIG: "sendgrid-demo"
+      FLOWCI_EMAIL_FROM: "flow.ci.test@gmail.com"
+
 steps:
   - name: clone
     plugin: 'gitclone'
     allow_failure: false
-
-
-after:
-  - name: email result
-    envs:
-        FLOWCI_SMTP_CONFIG: "sendgrid-demo"
-        FLOWCI_EMAIL_FROM: "flow.ci.test@gmail.com"
-    plugin: email-notify
 ```
