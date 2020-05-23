@@ -20,5 +20,5 @@ docker:
   image: flowci/plugin-email-notify
 
 script: |
-  plugindir=${FLOWCI_AGENT_PLUGIN_DIR}/email-report
+  plugindir=${FLOWCI_AGENT_PLUGIN_DIR}/email-notify
   python3 ${plugindir}/src/report.py
