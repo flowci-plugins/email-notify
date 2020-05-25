@@ -4,11 +4,11 @@ icon: "email.svg"
 
 inputs:
 - name: FLOWCI_SMTP_CONFIG
-  type: string
+  type: config
   required: true
 
 - name: FLOWCI_EMAIL_FROM
-  type: string
+  type: email
   required: true
 
 - name: FLOWCI_EMAIL_TO
