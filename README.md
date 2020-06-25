@@ -18,7 +18,6 @@ It will send job report via email
 envs:
   FLOWCI_GIT_URL: "https://github.com/FlowCI/spring-petclinic-sample.git"
   FLOWCI_GIT_BRANCH: "master"
-  FLOWCI_GIT_REPO: "spring-petclinic"
 
 notifications:
   - plugin: 'email-notify'
