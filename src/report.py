@@ -22,11 +22,11 @@ if Config == None:
 if Config['category'] != 'SMTP':
     sys.exit('Invalid SMTP config')
 
-SmtpSecure = Config['smtp']['secure'] # NONE, SSL, TLS
-SmtpAddr = Config['smtp']['server']
-SmtpPort = Config['smtp']['port']
-SmtpUser = Config['smtp']['auth']['username']
-SmtpPw = Config['smtp']['auth']['password']
+SmtpSecure = Config['secure']  # NONE, SSL, TLS
+SmtpAddr = Config['server']
+SmtpPort = Config['port']
+SmtpUser = Config['auth']['username']
+SmtpPw = Config['auth']['password']
 
 def createServer():
     if SmtpSecure in ['ssl', 'SSL']:
